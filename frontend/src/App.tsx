@@ -173,7 +173,6 @@ function AppContent() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-background">
         <Routes>
           <Route 
             path="/" 
@@ -226,7 +225,6 @@ function AppContent() {
           isOpen={isAuthModalOpen}
           onClose={() => setIsAuthModalOpen(false)}
         />
-      </div>
     </Router>
   )
 }

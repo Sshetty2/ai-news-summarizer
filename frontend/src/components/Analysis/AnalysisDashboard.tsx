@@ -91,65 +91,62 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Article Info */}
       <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
             Analysis Results
           </CardTitle>
-          <div className="text-sm text-muted-foreground flex items-center gap-2">
-            <Clock className="h-4 w-4" />
-            Analyzed {analysis.created_at}
-          </div>
         </CardHeader>
-        <CardContent>
-          <h3 className="font-semibold mb-2 line-clamp-2">
+        <CardContent className="space-y-2">
+          <h3 className="font-semibold text-sm line-clamp-2">
             {analysis.article.title}
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="text-xs text-muted-foreground line-clamp-2">
             {analysis.article.description}
           </p>
+          <div className="text-xs text-muted-foreground flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            {analysis.created_at}
+          </div>
         </CardContent>
       </Card>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-3">
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Political Bias</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge className={analysis.political_bias}>
-                    {analysis.political_bias}
-                  </Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Confidence: {Math.round(analysis.bias_confidence_score * 100)}%
-                </p>
+          <CardContent className="pt-4 pb-4">
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground">Political Bias</p>
+              <div className="flex items-center justify-between">
+                <Badge className={analysis.political_bias}>
+                  {analysis.political_bias.replace('_', ' ')}
+                </Badge>
+                <span className="text-xs text-muted-foreground">
+                  {Math.round(analysis.bias_confidence_score * 100)}%
+                </span>
               </div>
-              <Target className="h-8 w-8 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Overall Sentiment</p>
-                <div className="flex items-center gap-2 mt-1">
+          <CardContent className="pt-4 pb-4">
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground">Overall Sentiment</p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
                   {getSentimentIcon()}
-                  <span className="font-semibold">
+                  <span className="font-semibold text-sm">
                     {analysis.overall_sentiment_score > 0 ? '+' : ''}
                     {(analysis.overall_sentiment_score * 100).toFixed(1)}%
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Tone: {analysis.emotional_tone}
-                </p>
+                <span className="text-xs text-muted-foreground">
+                  {analysis.emotional_tone}
+                </span>
               </div>
             </div>
           </CardContent>
@@ -158,22 +155,22 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
 
       {/* Sentiment Breakdown */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
             <PieChartIcon className="h-4 w-4" />
-            Sentiment Breakdown
+            Sentiment
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-64">
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={sentimentData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
+                  innerRadius={40}
+                  outerRadius={70}
                   paddingAngle={5}
                   dataKey="value"
                 >
@@ -182,9 +179,16 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
                   ))}
                 </Pie>
                 <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
-                <Legend />
               </PieChart>
             </ResponsiveContainer>
+          </div>
+          <div className="flex justify-center gap-3 text-xs">
+            {sentimentData.map((entry) => (
+              <div key={entry.name} className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                <span>{entry.name}: {entry.value}%</span>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
@@ -192,19 +196,19 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
       {/* Topic Analysis */}
       {topicsData.length > 0 && (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
-              Topic Distribution
+              Topics
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64">
+            <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={topicsData} layout="horizontal">
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="topic" type="category" width={80} />
+                  <XAxis type="number" tick={{ fontSize: 10 }} />
+                  <YAxis dataKey="topic" type="category" width={60} tick={{ fontSize: 10 }} />
                   <Tooltip formatter={(value) => [`${value}%`, 'Relevance']} />
                   <Bar dataKey="value" fill="#3b82f6" radius={[0, 4, 4, 0]} />
                 </BarChart>
@@ -214,54 +218,16 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
         </Card>
       )}
 
-      {/* Political Bias Meter */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Target className="h-4 w-4" />
-            Political Bias Meter
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-32">
-            <ResponsiveContainer width="100%" height="100%">
-              <RadialBarChart 
-                cx="50%" 
-                cy="50%" 
-                innerRadius="60%" 
-                outerRadius="90%" 
-                data={biasData}
-                startAngle={180}
-                endAngle={0}
-              >
-                <RadialBar dataKey="value" cornerRadius={5} fill={biasData[0].fill} />
-                <text 
-                  x="50%" 
-                  y="50%" 
-                  textAnchor="middle" 
-                  dominantBaseline="middle" 
-                  className="text-sm font-semibold"
-                >
-                  {biasScore < -0.3 ? 'Left' : 
-                   biasScore > 0.3 ? 'Right' : 
-                   'Center'}
-                </text>
-              </RadialBarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Key Themes */}
       {analysis.key_themes.length > 0 && (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Key Themes</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Key Themes</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {analysis.key_themes.map((theme, index) => (
-                <Badge key={index} variant="outline">
+                <Badge key={index} variant="outline" className="text-xs">
                   {theme}
                 </Badge>
               ))}
@@ -270,39 +236,37 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
         </Card>
       )}
 
+      {/* Controversy Level */}
+      <Card>
+        <CardContent className="pt-4 pb-4">
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground">Controversy Level</p>
+            <div className="w-full bg-secondary rounded-full h-2">
+              <div
+                className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${analysis.controversy_level * 100}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground text-right">
+              {Math.round(analysis.controversy_level * 100)}%
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* AI Reasoning */}
       {analysis.bias_reasoning && (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">AI Analysis Reasoning</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">AI Reasoning</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               {analysis.bias_reasoning}
             </p>
           </CardContent>
         </Card>
       )}
-
-      {/* Controversy Level */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <p className="text-sm text-muted-foreground mb-2">Controversy Level</p>
-              <div className="w-full bg-secondary rounded-full h-2">
-                <div 
-                  className="bg-orange-500 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${analysis.controversy_level * 100}%` }}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {Math.round(analysis.controversy_level * 100)}% controversial
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

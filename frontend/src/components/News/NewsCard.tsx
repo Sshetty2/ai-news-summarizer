@@ -40,53 +40,45 @@ const NewsCard: React.FC<NewsCardProps> = ({
   }
 
   return (
-    <Card 
-      className="news-card hover:shadow-lg transition-all duration-200 cursor-pointer"
+    <Card
+      className="news-card hover:shadow-lg transition-all duration-200 cursor-pointer h-full flex flex-col"
       onClick={handleCardClick}
     >
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-3">
-          <CardTitle className="text-lg leading-tight line-clamp-3">
-            {article.title}
-          </CardTitle>
-          {article.url_to_image && (
-            <img
-              src={article.url_to_image}
-              alt={article.title}
-              className="w-16 h-16 object-cover rounded-md flex-shrink-0"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none'
-              }}
-            />
-          )}
+      {article.url_to_image && (
+        <div className="w-full h-48 overflow-hidden">
+          <img
+            src={article.url_to_image}
+            alt={article.title}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.parentElement!.style.display = 'none'
+            }}
+          />
         </div>
-        
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span className="font-medium text-primary">{article.source_name}</span>
-          {article.author && (
-            <>
-              <span>•</span>
-              <div className="flex items-center gap-1">
-                <User className="h-3 w-3" />
-                <span>{article.author}</span>
-              </div>
-            </>
-          )}
+      )}
+
+      <CardHeader className="pb-3 flex-none">
+        <CardTitle className="text-base leading-tight line-clamp-2">
+          {article.title}
+        </CardTitle>
+
+        <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+          <span className="font-medium text-primary truncate">{article.source_name}</span>
           <span>•</span>
           <div className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            <span>{article.published_at}</span>
+            <Clock className="h-3 w-3 flex-shrink-0" />
+            <span className="truncate">{article.published_at}</span>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="pt-0">
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+      <CardContent className="pt-0 flex-1 flex flex-col justify-between">
+        <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
           {article.description}
         </p>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 flex-wrap">
             {article.category_name && (
               <Badge variant="secondary" className="text-xs">
                 {article.category_name}
@@ -100,23 +92,24 @@ const NewsCard: React.FC<NewsCardProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-1">
-            <Button 
-              variant="ghost" 
+          <div className="flex items-center gap-2 justify-between">
+            <Button
+              variant="ghost"
               size="sm"
               onClick={handleExternalClick}
-              className="h-8 px-2"
+              className="h-7 px-2 flex-shrink-0"
             >
-              <ExternalLink className="h-3 w-3" />
+              <ExternalLink className="h-3 w-3 mr-1" />
+              <span className="text-xs">Read</span>
             </Button>
-            
+
             {showAnalysisButton && (
               <Button
                 variant={article.has_analysis ? "secondary" : "default"}
                 size="sm"
                 onClick={handleAnalyzeClick}
                 disabled={isAnalyzing}
-                className="h-8 px-3"
+                className="h-7 px-3 flex-1"
               >
                 {isAnalyzing ? (
                   <div className="flex items-center gap-1">
@@ -127,7 +120,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
                   <div className="flex items-center gap-1">
                     <BarChart3 className="h-3 w-3" />
                     <span className="text-xs">
-                      {article.has_analysis ? 'View Analysis' : 'Analyze'}
+                      {article.has_analysis ? 'View' : 'Analyze'}
                     </span>
                   </div>
                 )}

@@ -56,23 +56,24 @@ const NewsList: React.FC<NewsListProps> = ({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-2">
       {/* Search and Filter Controls */}
       <div className="space-y-3">
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pl-9"
+              className="pl-9 h-10"
             />
           </div>
           <Button
             variant="outline"
             size="icon"
             onClick={() => setShowFilters(!showFilters)}
+            className="h-10 w-10"
           >
             <Filter className="h-4 w-4" />
           </Button>
@@ -81,6 +82,7 @@ const NewsList: React.FC<NewsListProps> = ({
             size="icon"
             onClick={onRefresh}
             disabled={isLoading}
+            className="h-10 w-10"
           >
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -195,8 +197,8 @@ const NewsList: React.FC<NewsListProps> = ({
         </Card>
       )}
 
-      {/* Articles List */}
-      <div className="space-y-3">
+      {/* Articles Grid - 3 columns */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
         {articles.map((article) => (
           <NewsCard
             key={article.id}
