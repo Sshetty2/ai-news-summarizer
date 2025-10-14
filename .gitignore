@@ -1,0 +1,13 @@
+*.env
+*/node_modules
+*/venv
+*.pyc
+*db.sqlite3
+
+# Log files
+*.log
+*.log.*
+*.log.*.*
+*.log.*.*.*
+*.log.*.*.*.*
+*.log.*.*.*.*.*
